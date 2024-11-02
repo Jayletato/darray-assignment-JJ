@@ -42,7 +42,7 @@ void da_append(darray *array, int value)
     if (temp_array1 == NULL){
         printf("Realloc error 1 in append");
         free(temp_array1);
-        return NULL;
+        goto append_end;
     }
     array = temp_array1;
 
@@ -52,10 +52,12 @@ void da_append(darray *array, int value)
     if (temp_array2 == NULL){
         printf("Realloc error 2 in append");
         free(temp_array2);
-        return NULL;
+        goto append_end;
     }
     array->array_object = temp_array2;
-    array->array_object[(sizeof(array) * sizeof(int))] = value; 
+    array->array_object[(sizeof(array) * sizeof(int))] = value;
+    
+    append_end:  
 }
 
 size_t da_size(darray *array)
