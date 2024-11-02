@@ -8,16 +8,18 @@ typedef struct darray{
 
 darray *da_create()
 {
-   darray *new_array = (darray *)malloc(sizeof(darray) + sizeof(int));
+   darray *new_array = (darray *)malloc(sizeof(darray));
    if (new_array == NULL) {
-    return NULL;
+        free(new_array);
+        return NULL;
     }
-    (*new_array).array_size = sizeof(int);
 
+    (*new_array).array_size = sizeof(int);
     new_array->array_object = (int *)malloc(sizeof(int));
+
     if (new_array->array_object == NULL) {
-    free(new_array);
-    return NULL;
+        free(new_array);
+        return NULL;
     }
     return new_array;
 }
@@ -30,27 +32,30 @@ int *da_get(darray *array, size_t idx)
         return NULL;
     }
     else {
-        return array->array_object[idx];
+        return &(array->array_object[idx]);
     }
 }
 
-int da_append(darray *array, int value)
+void da_append(darray *array, int value)
 {
-    darray *temp_array = realloc(array, sizeof(array) * sizeof(int));
-    if (temp_array == NULL){
+    darray *temp_array1 = realloc(array, sizeof(array) * sizeof(int));
+    if (temp_array1 == NULL){
         printf("Realloc error 1 in append");
+        free(temp_array1);
         return NULL;
     }
-    array = temp_array;
+    array = temp_array1;
 
-    array->array_size = sizeof(int);
+    array->array_size += sizeof(int);
     
-    darray *temp_array = realloc(array->array_object, sizeof(array) * sizeof(int));
-    if (temp_array == NULL){
+    darray *temp_array2 = realloc(array->array_object, sizeof(array) * sizeof(int));
+    if (temp_array2 == NULL){
         printf("Realloc error 2 in append");
+        free(temp_array2);
         return NULL;
     }
-    array->array_object = temp_array;
+    array->array_object = temp_array2;
+    array->array_object[(sizeof(array) * sizeof(int))] = value; 
 }
 
 size_t da_size(darray *array)
